@@ -2,9 +2,9 @@
 
 This is the template to build docker containers for the HPCaaS system.
 
-Start by cloning this repository to your machine, this repository is the template that you will customise.
-
 ## Quick Overview of HPCaaS
+
+Start by cloning this repository to your machine, this repository is the template that you will customise with your code.
 
 1. You make the container with this template
 1. You run it the code with the orchestrator
@@ -14,7 +14,7 @@ Start by cloning this repository to your machine, this repository is the templat
     * If run on your local machine, the results are copied from the container to a local directory,
     * If run in the cloud, your computer downloads the results
 
-## Building Your Container
+## Developing Your Container
 ### Adding your Code
 
 Firstly, your code needs to be copied to the subdirectory in this repository named `code`, a directory that currently comes with a single empty file named `copy_your_code_files_here`. When the container is built, it will copy everything from this directory to the container.
@@ -101,7 +101,7 @@ When you build your HPCaaS container, this parameter data will be encoded into t
 
 This is mostly the job of the HPCaaS orchestrator and container daemon, which, at runtime, will:
 
-1. Fetch the parameter metadata from your container 
+1. Fetch the parameter metadata from your container
 1. Get valid parameter values from the user
 1. Pass these values to the HPCaaS container daemon
 1. The container daemon will run your code with these parameters
@@ -126,6 +126,16 @@ The first being a flat object containing key-value mappings of the parameters, a
 ### Code Configuration
 
 Your code may have special requirements for its runtime environment. Similar to the code parameters json file, we use a `container_config.json` file (in the same directory as this readme), as the source of configuration information. 
+
+*Code Entry Point*
+
+Currently the container assumes that the entrypoint exectuable for your code is called `hpc_code`. You can customise this by adding:
+
+    {
+      codeName: "your_code_name_here",
+    }
+
+The container will now try to execute the new name.
 
 *Extra Ports*
 
@@ -174,6 +184,47 @@ If your container requires a shared filesystem across containers, add to `contai
 
 This will mount a shared file system at `/hpcaas/shared`.
 
+## Metadata
+
+We've described how we use `parameters.json` to describe the parameter information for your code, and how we use `container_config.json` to customise the container environment and services. The final item in the HPCaaS container puzzle is metadata for the container which we store our container metadata in `metadata.json`.
+
+### Naming and tagging
+
+You will probably want to version your container, otherwise the build system will tag your container as unknown/unknown:0.0.0. To tag and name your container add:
+
+    {
+      "name": "your_container_name",
+      "version": "0.1.1"
+    }
+
+### Misc metadata
+
+You can add any other metadata to this file. 
+
+    {
+      author: "Itsa me, Mario"
+      description: "Container used to test something"
+    }
+
+## Building Your Container
+
+You should now have four files in this directory:
+
+1. `parameters.json`: Parameter information that your code requires
+1. `container_config.json`: Container environment and metadata
+1. `metadata.json`: Metadata for the container
+1. `Dockerfile`: Your dockerfile that copies your code and installs your dependencies
+
+...and have your copied code in `./code/`.
+
+You can build the container by running build:
+
+    make
+
+This will generate your HPCaaS container, and save it locally to docker.
+
+To see your new image type `docker images`. To run this image you will need something like hpcaas-orchestrator.
+
 ### Runtime Information
 
 There are a number of runtime parameters that the HPCaaS system will make available to your container. These parameters will be made available via environment variables (all uppercase with underscores replacing spaces), and via a pair of config files at `/hpcaas/runtime/config.json` (flat object) and `/hpcaas/runtime/config` (newline separated).
@@ -194,33 +245,4 @@ A mapping of container world ranks to SSH addresses, i.e. <ip>:<port>. Will be a
 
 At the end of your code running, it must save its results to `/hpcaas/results`. Once the primary code process ends, the container daemon will upload/copy everything in the results directory to the location specified by the hpcaas-orchestrator.
 
-## Metadata
-
-We've described how we use `parameters.json` to describe the parameter information for your code, and how we use `container_config.json` to customise the container environment and services. The final item in the HPCaaS container puzzle is metadata for the container which we store our container metadata in `metadata.json`.
-
-### Versioning and tagging
-
-You will probably want to version your container, otherwise the build system will tag your container as hpcaas_unknown:0.0.0. To tag and name your container add:
-
-    {
-      name: your_container_name
-      version: 0.1.1
-    }
-
-## Building Your Container
-
-You should now have four files in this directory:
-
-1. `parameters.json`: Parameter information that your code requires
-1. `container_config.json`: Container environment and metadata
-1. 
-1. `Dockerfile`: The dockerfile that will be used in the docker build process
-
-You also need to have your code in `/hpcaas/code`.
-
-You can build the container by running make:
-
-    make
-
-This will generate your HPCaaS container, and save it locally to docker.
 
