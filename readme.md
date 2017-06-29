@@ -17,13 +17,7 @@ Start by cloning this repository to your machine, this repository is the templat
 ## Developing Your Container
 ### Adding your Code
 
-Firstly, your code needs to be copied to the subdirectory in this repository named `code`, a directory that currently comes with a single empty file named `copy_your_code_files_here`. When the container is built, it will copy everything from this directory to the container.
-
-The default executable that the container looks for is called `hpc_code`. You can change the name of the executable that the container will execute by changing the environment variable that it looks for Dockerfile line to the name of your code:
-
-    ENV CODE_BINARY_NAME=hpc_code
-
-#### Dependencies
+Firstly, your code needs to be copied to the subdirectory in this repository named `code`, a directory that currently comes with a single empty file named `copy_your_code_files_here`. When the container is built, it will copy everything from this directory to the container. The default executable that the container looks for is called `hpc_code`. You can change the name of the executable that the container will execute by changing the configuration, described below.
 
 Your code may have some dependencies that need to be installed before it can work. If these can be installed via ubuntu repositories, apt is available. Otherwise, this is a normal docker container that you can customise using typical Dockerfile commands (e.g. ADD, RUN). 
 
@@ -244,5 +238,4 @@ A mapping of container world ranks to SSH addresses, i.e. <ip>:<port>. Will be a
 ### Results
 
 At the end of your code running, it must save its results to `/hpcaas/results`. Once the primary code process ends, the container daemon will upload/copy everything in the results directory to the location specified by the hpcaas-orchestrator.
-
 
