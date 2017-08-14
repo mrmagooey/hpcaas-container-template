@@ -1,6 +1,7 @@
-FROM mrmagooey/hpcaas-container-base:0.1.2
+FROM mrmagooey/hpcaas-container-base:0.1.3
 
 ### Install your dependencies ###
+# RUN apt-get update
 # RUN apt-get install -y <dependencies>
 
 ### Copy your code ###
