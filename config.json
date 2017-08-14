@@ -1,0 +1,37 @@
+{
+    "daemon": {
+        "codeName": "hpc_code"
+    },
+    "metadata":{
+        "author": "unknown",
+        "container_name": "unknown",
+        "version": "0.0.0"
+    },
+    "parameters": {
+        "integer_parameter1": {
+            "type": "integer",
+            "description": "A description of the integer parameter",
+            "max": 1000,
+            "min": 30,
+            "mandatory": true
+        },
+        "float_parameter1": {
+            "type": "float",
+            "description": "A description of the float parameter",
+            "min": 30.5,
+            "mandatory": true
+        },
+        "string_parameter1": {
+            "type": "string",
+            "description": "This parameter will take any string"
+        },
+        "boolean_parameter": {
+            "type": "boolean",
+            "description": "A boolean parameter"
+        },
+        "file_parameter1": {
+            "type": "file",
+            "description": "A description of the file parameter"
+        }
+    }
+}

@@ -174,6 +174,8 @@ Keep in mind that any ports you open will potentially be open on the wider inter
 
 *Shared File System*
 
+(To be implemented)
+
 If your container requires a shared filesystem across containers, add to `container_config.json`:
 
     {
