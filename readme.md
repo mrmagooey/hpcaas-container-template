@@ -19,7 +19,7 @@ Start by cloning this repository to your machine, this repository is the templat
 
 Firstly, your code needs to be copied to the subdirectory in this repository named `code`, a directory that currently comes with a single empty file named `copy_your_code_files_here`. When the container is built, it will copy everything from this directory to the container. The default executable that the container looks for is called `hpc_code`. You can change the name of the executable that the container will execute by changing the configuration, described below.
 
-Your code may have some dependencies that need to be installed before it can work. If these can be installed via ubuntu repositories, apt is available. Otherwise, this is a normal docker container that you can customise using typical Dockerfile commands (e.g. ADD, RUN). 
+Your code may have some dependencies that need to be installed before it can work. If these can be installed via ubuntu repositories, apt is available. Otherwise, this is a normal docker container that you can customise using typical Dockerfile commands (e.g. ADD, RUN).
 
 ### Code Parameters
 
@@ -108,6 +108,8 @@ The HPCaaS container daemon is responsible for correctly running your code and e
 
 Any parameters that your code needs will be be available in environment variables under the prefix `PARAM_`. This means that if your code parameter is called foo, whatever value the user has chosen for foo will be provided to each container under `PARAM_foo`. For file parameters, the value of the environment variable will be an absolute path to the file, which will be stored in the container at `/hpcaas/parameters/files/<filename>`.
 
+Keep in mind that if you choose to get your parameters from environment variables, environment variables are always stored as strings.
+
 ##### Parameter Files
 
 In addition to being available as environment variables, parameters will be available in two files:
@@ -115,7 +117,9 @@ In addition to being available as environment variables, parameters will be avai
 1. /hpcaas/parameters/parameters.json
 1. /hpcaas/parameters/parameters
 
-The first being a flat object containing key-value mappings of the parameters, and the second containing newline separated parameters in the environment variable format (e.g. `foo=bar`). The `PARAM_` prefix is not added to the parameter names in these files.
+The first being a flat JSON object containing key-value mappings of the parameters, and the second containing newline separated parameters in the environment variable format (e.g. `foo=bar`). The `PARAM_` prefix is not added to the parameter names in these files. 
+
+In the JSON file the types are preserved (e.g. Number, bool, string), but in the second file all values are strings (again, due to how environment variables work).
 
 ### Code Configuration
 
