@@ -1,3 +1,4 @@
+DOCKER_IMAGE_NAME:=hpcaas-container-template
 DOCKER_TAG:=latest
 
 .PHONY: all build
@@ -16,7 +17,7 @@ PARAMETERS:=$(shell $(PARAMETERS_COMMAND))
 build:
 ifeq ($(DAEMON_VALID), 0)
 ifeq ($(PARAMETERS_VALID), 0)
-	docker build --label hpcaas.daemon="$(DAEMON)" --label hpcaas.parameters="$(PARAMETERS)" -t  $(DOCKER_TAG) .
+	docker build --label hpcaas.daemon="$(DAEMON)" --label hpcaas.parameters="$(PARAMETERS)" -t  $(DOCKER_IMAGE_NAME):$(DOCKER_TAG) .
 endif
 endif
 
