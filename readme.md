@@ -17,7 +17,9 @@ Start by cloning this repository to your machine, this repository is the templat
 ## Developing Your Container
 ### Adding your Code
 
-Firstly, your code needs to be copied to the subdirectory in this repository named `code`, a directory that currently comes with a single empty file named `copy_your_code_files_here`. When the container is built, it will copy everything from this directory to the container. The default executable that the container looks for is called `hpc_code`. You can change the name of the executable that the container will execute by changing the configuration, described below.
+Use the docker build options `ADD` or `COPY` to add your code to the container. 
+
+The default executable that the container looks for is called `hpc_code`, and needs copy the entrypoint executable to `/hpcaas/code/hpc_code`. 
 
 Your code may have some dependencies that need to be installed before it can work. If these can be installed via ubuntu repositories, apt is available. Otherwise, this is a normal docker container that you can customise using typical Dockerfile commands (e.g. ADD, RUN).
 
@@ -47,48 +49,47 @@ Each entry in the parameters file must identify what type it is and there are fi
     * options: a whitelist of potential strings (optional property)
 1. Boolean
 1. File
-    * filename: the name of the file to be passed (mandatory property)
     
 Each parameter entry can also have these fields:
 
 1. description: a description of the parameter entry
-1. mandatory: whether or not this parameter is required for your code to work (Defaults to false)
+1. required: whether or not this parameter is required for your code to work (Defaults to false)
 
-Using these types and their options, an example parameters.json file might look like:
+Using these types and their options, an example config.json file might look like:
 
-    {
-      "integer_parameter1": {
-        "type": "integer",
-        "description": "A description of the integer parameter",
-        "max": 1000,
-        "min": 30,
-        "mandatory": true
-      },
-      "float_parameter1": {
-        "type": "float",
-        "description": "A description of the float parameter",
-        "min": 30.5,
-        "mandatory": true
-      },
-      "string_parameter1": {
-        "type": "string",
-        "description": "This parameter will take any string"
-      },
-      "string_parameter2": {
-        "type": "string",
-        "description": "This parameter has a white list of options",
-        "options": ["string option1", "string option 2"]
-      },
-      "boolean_parameter": {
-        "type": "boolean",
-        "description": "A boolean parameter"
-      },
-      "file_parameter1": {
-        "type": "file",
-        "description": "A description of the file parameter"
-      }
-    }
-
+    "parameters": [
+        {
+            "name": "parameter1",
+            "type": "integer",
+            "description": "A description of the integer parameter",
+            "max": 1000,
+            "min": 30,
+            "required": true
+        },
+        {
+            "name": "parameter1",
+            "type": "float",
+            "description": "A description of the float parameter",
+            "min": 30.5,
+            "required": true
+        },
+        {
+            "name": "parameter1",
+            "type": "string",
+            "description": "This parameter will take any string"
+        },
+        {
+            "name":"boolean_parameter",
+            "type": "boolean",
+            "description": "A boolean parameter"
+        },
+        {
+            "name":"file_parameter1",
+            "type": "file",
+            "description": "A description of the file parameter"
+        }
+    ]
+    
 When you build your HPCaaS container, this parameter data will be encoded into the label metadata at `hpcaas.parameters`. 
 
 #### How the User Passes Parameters
